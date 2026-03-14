@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from ...enums.attachment import AttachmentType
 from .attachment import Attachment
@@ -57,7 +57,7 @@ class Video(Attachment):
         bot (Optional[Any]): Ссылка на экземпляр бота, не сериализуется.
     """
 
-    type: Literal[AttachmentType.VIDEO] | None = AttachmentType.VIDEO  # pyright: ignore[reportIncompatibleVariableOverride]
+    type: Literal[AttachmentType.VIDEO]  # pyright: ignore[reportIncompatibleVariableOverride]
     token: str | None = None
     urls: VideoUrl | None = None
     thumbnail: VideoThumbnail
@@ -68,3 +68,9 @@ class Video(Attachment):
 
     if TYPE_CHECKING:
         bot: "Bot" | None  # type: ignore
+
+    @model_validator(mode="before")
+    def fill_type(self, values: dict[str, Any]) -> dict[str, Any]:
+        if "type" not in values or values["type"] is None:
+            values["type"] = AttachmentType.VIDEO
+        return values
