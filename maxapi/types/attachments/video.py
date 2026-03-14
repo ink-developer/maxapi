@@ -70,7 +70,6 @@ class Video(Attachment):
         bot: "Bot" | None  # type: ignore
 
     @model_validator(mode="before")
-    def fill_type(self, values: dict[str, Any]) -> dict[str, Any]:
-        if "type" not in values or values["type"] is None:
-            values["type"] = AttachmentType.VIDEO
+    def ensure_type_present(self, values: dict[str, Any]) -> dict[str, Any]:
+        values.setdefault("type", AttachmentType.VIDEO)
         return values
