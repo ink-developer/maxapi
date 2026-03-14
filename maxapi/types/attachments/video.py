@@ -57,7 +57,7 @@ class Video(Attachment):
         bot (Optional[Any]): Ссылка на экземпляр бота, не сериализуется.
     """
 
-    type: Literal[AttachmentType.VIDEO]  # pyright: ignore[reportIncompatibleVariableOverride]
+    type: AttachmentType = AttachmentType.VIDEO  # pyright: ignore[reportIncompatibleVariableOverride]
     token: str | None = None
     urls: VideoUrl | None = None
     thumbnail: VideoThumbnail
@@ -68,8 +68,3 @@ class Video(Attachment):
 
     if TYPE_CHECKING:
         bot: "Bot" | None  # type: ignore
-
-    @model_validator(mode="before")
-    def ensure_type_present(self, values: dict[str, Any]) -> dict[str, Any]:
-        values.setdefault("type", AttachmentType.VIDEO)
-        return values
